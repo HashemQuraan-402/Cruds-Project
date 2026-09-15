@@ -1,85 +1,129 @@
-*{
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
-body{
-    background-color: #222 ;
-    color:#fff;
-    font-family:system-ui;
-}
-.cruds{
-    width: 80%;
-    margin: auto;
+
+body {
+    min-height: 100vh;
+    background-color: #222;
+    color: #fff;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-.head{
+.cruds {
+    width: min(92%, 1200px);
+    margin: 0 auto;
+    padding-bottom: 40px;
+}
+
+.head {
+    margin: 24px 0;
     text-align: center;
     text-transform: uppercase;
-    margin:20px 0;
 }
-input{
+
+input {
     width: 100%;
-    height: 30px;
+    min-height: 40px;
+    margin: 5px 0;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+    border-radius: 5px;
     outline: none;
-    border:none;
-    margin: 4px 0;
-    padding: 4px;
-    border-radius:5px;
     background-color: #111;
-    color:#fff;
+    color: #fff;
 }
-input:focus{
+
+input:focus {
+    border-color: #e2a20c;
     background-color: #000;
-    transform:scale(1.1);
 }
-.price input{
-    width: 20%;
-    
+
+.price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
 }
-#total{
+
+.price input {
+    flex: 1 1 160px;
+}
+
+#total {
+    min-width: 120px;
+    padding: 8px;
+    border-radius: 5px;
     background-color: rgb(214, 11, 11);
-    padding:4px 4px;
-    border-radius:5px;
-    
 }
-#total::before{
-    content:'Total : ';
+
+#total::before {
+    content: "Total: ";
 }
-button{
+
+button {
     width: 100%;
-    height: 30px;
+    min-height: 36px;
+    margin: 5px 0;
+    border: none;
     border-radius: 20px;
     background-color: rgb(200, 132, 6);
-    border:none;
-    cursor:pointer;
-    color:#fff;
-    transition:0.5s;
-    margin: 5px;
-}
-button:hover{
-    background-color:yellow ;
-    letter-spacing:1px;
-    color:black;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.btnSearch{
+button:hover,
+button:focus-visible {
+    background-color: #ffe600;
+    color: #000;
+    outline: none;
+}
+
+.output {
+    overflow-x: auto;
+}
+
+.searchBlock {
+    min-width: min(100%, 640px);
+}
+
+.btnSearch {
     display: flex;
-    justify-content:space-between;
+    justify-content: space-between;
+    gap: 16px;
 }
-.btnSearch  button{
-    width: 45%;
-    
+
+.btnSearch button {
+    width: 50%;
 }
-table{
+
+table {
     width: 100%;
+    min-width: 900px;
+    margin: 12px 0;
+    border-collapse: collapse;
     text-align: center;
-    margin:10px 0;
-}
-th{
-    text-transform:uppercase;
-}
-th,td{
-    padding:5px;
 }
 
+th {
+    text-transform: uppercase;
+}
 
+th,
+td {
+    padding: 8px;
+    border-bottom: 1px solid #444;
+}
+
+@media (max-width: 600px) {
+    .btnSearch {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .btnSearch button {
+        width: 100%;
+    }
+}
