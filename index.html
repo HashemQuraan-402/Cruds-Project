@@ -1,106 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <link rel = "stylesheet"  href = "style.css">
-    <title>CRUDS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A browser-based product management CRUD application built with vanilla JavaScript.">
+    <title>Product Management System</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <main class="cruds">
+        <header class="head">
+            <h1>CRUDS</h1>
+            <p>Product Management System</p>
+        </header>
 
-    <div class="cruds">
-
-
-
-        <div class="head">
-
-            <h2>cruds</h2>
-
-            <p>product management system</p>
-
-        </div>
-
-
-
-
-        <div class="input">
-            
-                <input type="text" id="title" placeholder="title">
+        <section class="input" aria-label="Product details">
+            <input type="text" id="title" placeholder="Title" aria-label="Product title" maxlength="32">
 
             <div class="price">
-                
-                    <input type="number" id="price" onkeyup="getTotal()" placeholder="price">
-                     
- 
-                
-                    <input type="number" id="taxes" onkeyup="getTotal()" placeholder="taxes">
-                    
- 
-                
-                    <input type="number" id="ads" onkeyup="getTotal()" placeholder="ads">
-                    
- 
-                
-                    <input type="number" id="discount" onkeyup="getTotal()" placeholder="discount">
-                    
- 
-                <small id="total"></small>
+                <input type="number" id="price" oninput="getTotal()" placeholder="Price" aria-label="Price" min="0" step="0.01">
+                <input type="number" id="taxes" oninput="getTotal()" placeholder="Taxes" aria-label="Taxes" min="0" step="0.01">
+                <input type="number" id="ads" oninput="getTotal()" placeholder="Ads" aria-label="Advertising cost" min="0" step="0.01">
+                <input type="number" id="discount" oninput="getTotal()" placeholder="Discount" aria-label="Discount" min="0" step="0.01">
+                <output id="total" aria-live="polite"></output>
             </div>
-            
-                <input type="number" id="count" placeholder="count">
-                
-            
-                <input type="text" id="category" placeholder="category">
-                
- 
-            <button id="create">Create</button>
 
-        </div>
+            <input type="number" id="count" placeholder="Count" aria-label="Number of records" min="1" max="99" step="1">
+            <input type="text" id="category" placeholder="Category" aria-label="Product category" maxlength="32">
+            <button type="button" id="create">Create</button>
+        </section>
 
-
-
-
-
-        <div class="output">
+        <section class="output" aria-label="Saved products">
             <div class="searchBlock">
-                <input type="text" id="search" placeholder="search" onkeyup="searchElement(this.value)">
+                <input type="search" id="search" placeholder="Search" aria-label="Search products" oninput="searchElement(this.value)">
                 <div class="btnSearch">
-                    <button id="titleBtn" onclick="selectSearchMood(this.id)">Search By Title</button>
-                    <button id="categoryBtn" onclick="selectSearchMood(this.id)">Search By Category</button>
+                    <button type="button" id="titleBtn" onclick="selectSearchMood(this.id)">Search by Title</button>
+                    <button type="button" id="categoryBtn" onclick="selectSearchMood(this.id)">Search by Category</button>
                 </div>
             </div>
+
             <div id="deleteAll"></div>
+
             <table>
+                <thead>
                     <tr>
-                        <th>id</th>
-                        <th>title</th>
-                        <th>price</th>
-                        <th>taxes</th>
-                        <th>ads</th>
-                        <th>discount</th>
-                        <th>total</th>
-                        <th>category</th>
-                        <th>update</th>
-                        <th>delete</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Taxes</th>
+                        <th scope="col">Ads</th>
+                        <th scope="col">Discount</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Update</th>
+                        <th scope="col">Delete</th>
                     </tr>
-                    <tbody id = "tbody">
-
-
-                    </tbody>
+                </thead>
+                <tbody id="tbody"></tbody>
             </table>
-        </div>
+        </section>
+    </main>
 
-
-
-    </div>
-
-
-
-
-
-
-
-
-
-
- <script src = 'main.js'></script>   
+    <script src="main.js"></script>
 </body>
 </html>

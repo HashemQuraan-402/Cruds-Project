@@ -1,307 +1,238 @@
-// 1- get total
-let title = document.getElementById('title');
-let price = document.getElementById('price');
-let taxes = document.getElementById('taxes');
-let ads = document.getElementById('ads');
-let discount = document.getElementById('discount');
-let total = document.getElementById('total');
-let count = document.getElementById('count');
-let category = document.getElementById('category');
-let submit = document.getElementById('create');
-let temp;
-let mood = 'create';
+const STORAGE_KEY = 'products';
 
-//console.log(title,price,taxes,ads,discount,total,count,category,submit);
-function getTotal(){
-    if(price.value != ''){
-        total.style.background = 'green';
-        let result = (+price.value + +taxes.value + +ads.value) -
-        +discount.value;
-        total.innerHTML = result;
+const title = document.getElementById('title');
+const price = document.getElementById('price');
+const taxes = document.getElementById('taxes');
+const ads = document.getElementById('ads');
+const discount = document.getElementById('discount');
+const total = document.getElementById('total');
+const count = document.getElementById('count');
+const category = document.getElementById('category');
+const submit = document.getElementById('create');
 
-    }else{
+let products = loadProducts();
+let selectedIndex = null;
+let mode = 'create';
+let searchMode = 'title';
+
+function loadProducts() {
+    const savedData =
+        localStorage.getItem(STORAGE_KEY) ??
+        localStorage.getItem('product') ??
+        localStorage.getItem('Product');
+
+    if (!savedData) {
+        return [];
+    }
+
+    try {
+        const parsedData = JSON.parse(savedData);
+        return Array.isArray(parsedData) ? parsedData : [];
+    } catch (error) {
+        console.warn('Stored product data could not be read.', error);
+        return [];
+    }
+}
+
+function saveProducts() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+    localStorage.removeItem('product');
+    localStorage.removeItem('Product');
+}
+
+function getTotal() {
+    if (price.value.trim() === '') {
         total.style.background = 'rgb(214, 11, 11)';
-        total.innerHTML = '';
+        total.textContent = '';
+        return 0;
     }
+
+    const calculatedTotal =
+        Number(price.value) +
+        Number(taxes.value || 0) +
+        Number(ads.value || 0) -
+        Number(discount.value || 0);
+
+    total.style.background = calculatedTotal >= 0 ? 'green' : 'rgb(214, 11, 11)';
+    total.textContent = Number(calculatedTotal.toFixed(2));
+    return calculatedTotal;
 }
 
-//////////////////////////////////////////////////////
-
-// 2- create product
-
-let products;
-if(localStorage.Product != null){
-    products = JSON.parse(localStorage.Product);
-}else{
-    products = [];
-}
-
-submit.onclick = _=>{
-    
-    let newProduct = {
-        title:title.value.toUpperCase(),
-        price:price.value,
-        taxes:taxes.value,
-        ads:ads.value,
-        discount:discount.value,
-        total:total.innerHTML,
-        count:count.value,
-        category:category.value.toUpperCase(),
+function readProductFromForm() {
+    return {
+        title: title.value.trim().toUpperCase(),
+        price: Number(price.value),
+        taxes: Number(taxes.value || 0),
+        ads: Number(ads.value || 0),
+        discount: Number(discount.value || 0),
+        total: Number(getTotal().toFixed(2)),
+        category: category.value.trim().toUpperCase()
     };
-    /*
-    let errors = new Array(7);
-    errors[0]  = (newProduct.title == '') && (newProduct.price == '') && (newProduct.taxes == '') && (newProduct.ads == '') &&
-     (newProduct.discount == '') && (newProduct.count == '') && (newProduct.category == '') ;
-    errors[1] = newProduct.title.length>=2 && newProduct.title.length<=32;
-    errors[2]  = newProduct.price > 0 && newProduct.price <= 100000;
-    errors[3]  = (newProduct.taxes > 0) && (newProduct.taxes<=(newProduct.price/2));
-    errors[4]  = (newProduct.ads > 0) && (newProduct.ads<=(newProduct.price/2));
-    errors[5]  = (newProduct.discount > 0) && (newProduct.discount<=(newProduct.price/2));
-    errors[6]  = (newProduct.count > 0) && (newProduct.count<=100);
-    errors[7]  = (newProduct.category.length>=2) && (newProduct.category.length<=32);
-    
-    //if(titleNote && priceNote && taxesNote && adsNote && discountNote && countNote && categoryNote){
-    let errorType = '';
-    let goAhead = true;
-    for(let i = 0 ; i < errors.length ; i++){
-        if(errors[i]){
-            switch(i){
-                case 0:errorType = 'values';break;
-                case 1:errorType = 'title';break;
-                case 2:errorType = 'price';break;
-                case 3:errorType = 'taxes';break;
-                case 4:errorType = 'ads';break;
-                case 5:errorType = 'discount';break;
-                case 6:errorType = 'count';break;
-                case 7:errorType = 'category';break;
-            }
-            alert('please enter a right ' + errorType);
-            goAhead = false;
-            break;
-        }
-    }
-    //}
-    if(goAhead){
-        if(mood == 'create'){
-         if(newProduct.count>1){
-             for(let i=0; i<newProduct.count;i++){
-                  products.push(newProduct);
-                }
-            }else{
-                products.push(newProduct);
-            }
-        }else{
-            products[temp] = newProduct;
-            mood = 'create';
-            count.style.display = "block";
-            submit.innerHTML = "Create";
-        }
-        clearDataFromInput();
-        
-    }
-   */
-     let errors = new Array(7);
-    errors[0] = (newProduct.title === "") || (newProduct.price === "") || (newProduct.taxes === "") || (newProduct.ads === "") ||
-     (newProduct.count === "") || (newProduct.category === "");
-    errors[1] = (newProduct.title.length >= 2 && newProduct.title.length <= 12);
-    errors[2] = (newProduct.price > 0 && newProduct.price < 100000);
-    errors[3] = (newProduct.taxes >= 0 && newProduct.taxes < (newProduct.price / 2));
-    errors[4] = (newProduct.ads >= 0 && newProduct.ads < (newProduct.price / 2));
-    errors[5] = (newProduct.count > 0 && newProduct.count < 100);
-    errors[6] = (newProduct.category.length >= 2 && newProduct.category.length <= 12);
-
-    // Check for errors and show appropriate messages
-    let hasErrors = false;
-    
-    for (let i = 0; i < errors.length; i++) {
-        if ((i === 0 && errors[i]) || (i > 0 && !errors[i])) {
-            switch (i) {
-                case 0:
-                    alert("Please fill in all required fields");
-                    break;
-                case 1:
-                    alert("Title should be between 2-12 characters");
-                    break;
-                case 2:
-                    alert("Price should be positive and less than 100,000");
-                    break;
-                case 3:
-                    alert("Taxes should be non-negative and less than half the price");
-                    break;
-                case 4:
-                    alert("Ads should be non-negative and less than half the price");
-                    break;
-                case 5:
-                    alert("Count should be between 1-99");
-                    break;
-                case 6:
-                    alert("Category should be between 2-12 characters");
-                    break;
-            }
-            hasErrors = true;
-            break;
-        }
-    }
-
-    if (!hasErrors) {
-        if (mood === "create") {
-            if (newProduct.count > 1) {
-                for (let i = 0; i < newProduct.count; i++) {
-                    products.push(newProduct);
-                }
-            } else {
-                products.push(newProduct);
-            }
-        } else {
-            products[temp] = newProduct;
-            mood = "create";
-            submit.innerHTML = "Create";
-        }
-        clearDataFromInput();
-        localStorage.setItem("product", JSON.stringify(products));
-        showProducts();
-    }
-    //localStorage.setItem('Product',JSON.stringify(products));
-    
-    //showProducts();
 }
 
-////////////////////////////////////////////////////
+function validateProduct(product, quantity, isCreateMode) {
+    if (product.title.length < 2 || product.title.length > 32) {
+        return 'Title must contain between 2 and 32 characters.';
+    }
 
-// 3- clear inputs
+    if (!Number.isFinite(product.price) || product.price <= 0 || product.price > 100000) {
+        return 'Price must be greater than 0 and no more than 100,000.';
+    }
 
-function clearDataFromInput(){
+    if (!Number.isFinite(product.taxes) || product.taxes < 0 || product.taxes > product.price / 2) {
+        return 'Taxes must be non-negative and no more than half the price.';
+    }
+
+    if (!Number.isFinite(product.ads) || product.ads < 0 || product.ads > product.price / 2) {
+        return 'Advertising cost must be non-negative and no more than half the price.';
+    }
+
+    if (!Number.isFinite(product.discount) || product.discount < 0) {
+        return 'Discount must be a non-negative number.';
+    }
+
+    if (product.total < 0) {
+        return 'Discount cannot make the total price negative.';
+    }
+
+    if (isCreateMode && (!Number.isInteger(quantity) || quantity < 1 || quantity > 99)) {
+        return 'Count must be a whole number between 1 and 99.';
+    }
+
+    if (product.category.length < 2 || product.category.length > 32) {
+        return 'Category must contain between 2 and 32 characters.';
+    }
+
+    return '';
+}
+
+submit.addEventListener('click', () => {
+    const product = readProductFromForm();
+    const quantity = Number(count.value);
+    const isCreateMode = mode === 'create';
+    const validationMessage = validateProduct(product, quantity, isCreateMode);
+
+    if (validationMessage) {
+        window.alert(validationMessage);
+        return;
+    }
+
+    if (isCreateMode) {
+        for (let index = 0; index < quantity; index += 1) {
+            products.push({ ...product });
+        }
+    } else {
+        products[selectedIndex] = product;
+        mode = 'create';
+        selectedIndex = null;
+        count.style.display = 'block';
+        submit.textContent = 'Create';
+    }
+
+    saveProducts();
+    clearForm();
+    showProducts();
+});
+
+function clearForm() {
     title.value = '';
     price.value = '';
     taxes.value = '';
     ads.value = '';
     discount.value = '';
-    getTotal();
     count.value = '';
     category.value = '';
-    
-}
-
-////////////////////////////////////////////////////
-
-// 4- read on table
-
-
-function showProducts(){
-    
-    let table = "";
-    for(let i = 0; i<products.length;i++){
-        table += getTable(i);
-        
-    }
-    document.getElementById('tbody').innerHTML = table;
-    let deletebtn = document.getElementById('deleteAll');
-    
-    if(products.length > 0){
-        deletebtn.innerHTML = `<button onclick='deleteAllFromTable()'>Delete All (${products.length})</button>`;
-    }else{
-        deletebtn.innerHTML = '';
-    }
-
-}
-showProducts();
-
-
-function getTable(i){
-    return   `
-                    <tr>
-                        <td>${i}</td>
-                        <td>${products[i].title}</td>
-                        <td>${products[i].price}</td>
-                        <td>${products[i].taxes}</td>
-                        <td>${products[i].ads}</td>
-                        <td>${products[i].discount}</td>
-                        <td>${products[i].total}</td>
-                        <td>${products[i].category}</td>
-                        <td><button id="updateBtn" onclick = "updateItemInTable(${i})">Update</button></td>
-                        <td><button id="deleteBtn" onclick="deleteFromTable(${i})">Delete</button></td>
-                    </tr>        
-        `;
-}
-
-////////////////////////////////////////////////////////
-
-// 5- delete item
-
-function deleteFromTable(i){
-    products.splice(i,1);
-    localStorage.Product = JSON.stringify(products);
-    showProducts();
-    
-    
-    
-}
-
-function deleteAllFromTable(){
-    products.splice(0);
-    localStorage.clear();
-    showProducts();
-}
-
-
-///////////////////////////////////////////////////////////////
-
-// 6- count ---> in create and delete parts
-
-/////////////////////////////////////////////////////////////////
-
-// 7- update
-
-function updateItemInTable(i){
-    title.value = products[i].title;
-    price.value = products[i].price;
-    taxes.value = products[i].taxes;
-    ads.value = products[i].ads;
-    discount.value = products[i].discount;
-    category.value = products[i].category;
-    temp = i;
     getTotal();
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+}
+
+function getProductRow(product, index) {
+    return `
+        <tr>
+            <td>${index + 1}</td>
+            <td>${escapeHtml(product.title)}</td>
+            <td>${escapeHtml(product.price)}</td>
+            <td>${escapeHtml(product.taxes)}</td>
+            <td>${escapeHtml(product.ads)}</td>
+            <td>${escapeHtml(product.discount)}</td>
+            <td>${escapeHtml(product.total)}</td>
+            <td>${escapeHtml(product.category)}</td>
+            <td><button class="update-button" onclick="updateItemInTable(${index})">Update</button></td>
+            <td><button class="delete-button" onclick="deleteFromTable(${index})">Delete</button></td>
+        </tr>`;
+}
+
+function showProducts(list = allProductsWithIndices()) {
+    document.getElementById('tbody').innerHTML = list
+        .map(({ product, index }) => getProductRow(product, index))
+        .join('');
+
+    const deleteAllContainer = document.getElementById('deleteAll');
+    deleteAllContainer.innerHTML = products.length
+        ? `<button onclick="deleteAllFromTable()">Delete All (${products.length})</button>`
+        : '';
+}
+
+function allProductsWithIndices() {
+    return products.map((product, index) => ({ product, index }));
+}
+
+function deleteFromTable(index) {
+    products.splice(index, 1);
+    saveProducts();
+    showProducts(allProductsWithIndices());
+}
+
+function deleteAllFromTable() {
+    products = [];
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem('product');
+    localStorage.removeItem('Product');
+    showProducts(allProductsWithIndices());
+}
+
+function updateItemInTable(index) {
+    const product = products[index];
+    title.value = product.title;
+    price.value = product.price;
+    taxes.value = product.taxes;
+    ads.value = product.ads;
+    discount.value = product.discount;
+    category.value = product.category;
+    count.value = '1';
+
+    selectedIndex = index;
+    mode = 'update';
     count.style.display = 'none';
-    mood = 'update';
-    submit.innerHTML = "Update";
-    scroll({top:0,behavior:"smooth"});
+    submit.textContent = 'Update';
+    getTotal();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-///////////////////////////////////////////////////////////////////////
-
-// 8- search
-
-let searchMood = 'title';
-function selectSearchMood(searchID){
-
-    let search = document.getElementById('search');
-    if(searchID == 'titleBtn')
-        searchMood = 'title';
-    else{
-        searchMood = 'category';
-    }
-    search.focus();
-    search.placeholder = 'search By ' + searchMood;
-    search.value = "";
-    showProducts();
+function selectSearchMood(buttonId) {
+    searchMode = buttonId === 'titleBtn' ? 'title' : 'category';
+    const searchInput = document.getElementById('search');
+    searchInput.placeholder = `Search by ${searchMode}`;
+    searchInput.value = '';
+    searchInput.focus();
+    showProducts(allProductsWithIndices());
 }
 
-function searchElement(value){
-    let table = "";
-    for(let i = 0 ; i < products.length ; i++){
-        if(searchMood == 'title'){
-            if(products[i].title.includes(value.toUpperCase())){
-                table += getTable(i);
-            }
-        }else{
-             if(products[i].category.includes(value.toUpperCase())){
-                table += getTable(i);
-            }
-        }
-    }
-    document.getElementById('tbody').innerHTML = table;
+function searchElement(value) {
+    const query = value.trim().toUpperCase();
+    const filteredProducts = allProductsWithIndices().filter(({ product }) =>
+        String(product[searchMode]).toUpperCase().includes(query)
+    );
+
+    showProducts(filteredProducts);
 }
 
-/////////////////////////////////////////////////////////////
-
-// 9- clear data ---> in create function
+showProducts(allProductsWithIndices());
