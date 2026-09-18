@@ -2,6 +2,10 @@
 
 A browser-based product management application built with vanilla JavaScript. It supports the complete CRUD workflow and stores data locally in the browser, making it a lightweight demonstration of DOM manipulation, validation, and client-side persistence.
 
+## Live Demo
+
+[View the live project](https://hashemquraan-402.github.io/product-management-crud-app/)
+
 ## Features
 
 - Create one or multiple product records
@@ -65,7 +69,6 @@ This is a client-side educational project. Authentication, a back-end API, multi
 - Improve accessibility and form feedback
 - Split the JavaScript into smaller modules
 - Add a back-end API and database
-- Deploy a live demonstration
 
 ## Author
 
