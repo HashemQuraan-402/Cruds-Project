@@ -27,7 +27,7 @@ No installation or build step is required.
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/HashemQuraan-402/Cruds-Project.git
+   git clone https://github.com/HashemQuraan-402/product-management-crud-app.git
    ```
 
 2. Open the cloned folder.
@@ -47,7 +47,7 @@ The application stores product records only in the current browser through `loca
 ## Project Structure
 
 ```text
-Cruds-Project/
+product-management-crud-app/
 ├── index.html
 ├── main.js
 ├── style.css
@@ -73,4 +73,3 @@ This is a client-side educational project. Authentication, a back-end API, multi
 
 - [GitHub](https://github.com/HashemQuraan-402)
 - [LinkedIn](https://www.linkedin.com/in/hashem-quraan-b561453ab)
-
